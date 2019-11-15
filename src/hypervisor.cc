@@ -1,12 +1,17 @@
-#include "hypervisor.h"
+/**
+ * Copyright 2019 Leon Rinkel <leon@rinkel.me> and vmngr/libvirt contributers.
+ * 
+ * This file is part of the vmngr/libvirt project and is subject to the MIT
+ * license as in the LICENSE file in the project root.
+ */
+
+#include "src/hypervisor.h"
 
 Napi::FunctionReference Hypervisor::constructor;
-Napi::Object Hypervisor::Init(Napi::Env env, Napi::Object exports)
-{
+Napi::Object Hypervisor::Init(Napi::Env env, Napi::Object exports) {
     Napi::HandleScope scope(env);
 
     Napi::Function func = DefineClass(env, "Hypervisor", {
-
         InstanceMethod("connectOpen", &Hypervisor::ConnectOpen),
         InstanceMethod("connectClose", &Hypervisor::ConnectClose),
         InstanceMethod("connectListAllDomains",
@@ -31,9 +36,9 @@ Napi::Object Hypervisor::Init(Napi::Env env, Napi::Object exports)
         InstanceMethod("domainCreate", &Hypervisor::DomainCreate),
         InstanceMethod("domainShutdown", &Hypervisor::DomainShutdown),
         InstanceMethod("domainRestore", &Hypervisor::DomainRestore),
+        InstanceMethod("domainGetXMLDesc", &Hypervisor::DomainGetXMLDesc),
 
         InstanceMethod("nodeGetInfo", &Hypervisor::NodeGetInfo)
-
     });
 
     constructor = Napi::Persistent(func);
@@ -48,13 +53,11 @@ Napi::Object Hypervisor::Init(Napi::Env env, Napi::Object exports)
  ******************************************************************************/
 
 Hypervisor::Hypervisor(const Napi::CallbackInfo& info)
-    : Napi::ObjectWrap<Hypervisor>(info)
-{
+    : Napi::ObjectWrap<Hypervisor>(info) {
     Napi::Env env = info.Env();
     Napi::HandleScope scope(env);
 
-    if (info.Length() <= 0 || !info[0].IsObject())
-    {
+    if (info.Length() <= 0 || !info[0].IsObject()) {
         Napi::TypeError::New(env, "Expected an object.")
             .ThrowAsJavaScriptException();
         return;
@@ -62,8 +65,7 @@ Hypervisor::Hypervisor(const Napi::CallbackInfo& info)
 
     Napi::Object options = info[0].As<Napi::Object>();
 
-    if (!options.HasOwnProperty("uri"))
-    {
+    if (!options.HasOwnProperty("uri")) {
         Napi::TypeError::New(env, "Expected options to have property 'uri'.")
             .ThrowAsJavaScriptException();
         return;

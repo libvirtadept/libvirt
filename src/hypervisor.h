@@ -1,13 +1,20 @@
-#ifndef __LIBVIRT_HYPERVISOR_H
-#define __LIBVIRT_HYPERVISOR_H
+/**
+ * Copyright 2019 Leon Rinkel <leon@rinkel.me> and vmngr/libvirt contributers.
+ * 
+ * This file is part of the vmngr/libvirt project and is subject to the MIT
+ * license as in the LICENSE file in the project root.
+ */
 
-#include <string>
+#ifndef SRC_HYPERVISOR_H_
+#define SRC_HYPERVISOR_H_
 
 #include <napi.h>
 
 #include <libvirt/libvirt.h>
 #include <libvirt/virterror.h>
 #include <libvirt/libvirt-domain.h>
+
+#include <string>
 
 class ConnectOpenWorker;
 class ConnectCloseWorker;
@@ -30,15 +37,14 @@ class DomainSaveWorker;
 class DomainRestoreWorker;
 class DomainCreateWorker;
 class DomainShutdownWorker;
+class DomainGetXMLDescWorker;
 
 class NodeGetInfoWorker;
 
-class Hypervisor : public Napi::ObjectWrap<Hypervisor>
-{
-public:
-
+class Hypervisor : public Napi::ObjectWrap<Hypervisor> {
+ public:
     static Napi::Object Init(Napi::Env env, Napi::Object exports);
-    Hypervisor(const Napi::CallbackInfo& info);
+    explicit Hypervisor(const Napi::CallbackInfo& info);
 
     Napi::Value ConnectOpen(const Napi::CallbackInfo& info);
     Napi::Value ConnectClose(const Napi::CallbackInfo& info);
@@ -61,11 +67,11 @@ public:
     Napi::Value DomainCreate(const Napi::CallbackInfo& info);
     Napi::Value DomainShutdown(const Napi::CallbackInfo& info);
     Napi::Value DomainRestore(const Napi::CallbackInfo& info);
+    Napi::Value DomainGetXMLDesc(const Napi::CallbackInfo& info);
 
     Napi::Value NodeGetInfo(const Napi::CallbackInfo& info);
 
-private:
-
+ private:
     static Napi::FunctionReference constructor;
 
     std::string uri;
@@ -91,9 +97,9 @@ private:
     friend class DomainRestoreWorker;
     friend class DomainCreateWorker;
     friend class DomainShutdownWorker;
+    friend class DomainGetXMLDescWorker;
 
     friend class NodeGetInfoWorker;
-
 };
 
-#endif /* __LIBVIRT_HYPERVISOR_H */
+#endif  // SRC_HYPERVISOR_H_
