@@ -74,6 +74,11 @@ export class DomainBuilder {
         this.domainDesc.vcpu.value = vcpuCount;
         return this;
     }
+
+    setVNC(vncDesc: DomainGraphicsDesc): DomainBuilder {
+        return this.addGraphics(vncDesc);
+    }
+
     removeGraphics(): DomainBuilder {
         if (this.domainDesc.devices) {
             this.domainDesc.devices = this.domainDesc.devices
