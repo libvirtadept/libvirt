@@ -1146,6 +1146,7 @@ class DomainMemoryStatsWorker : public Worker {
         unsigned long long actual = 0;
         unsigned long long usable = 0;
         unsigned long long available = 0;
+
         for (int i = 0; i < nr_stats; i++) {
             if (memstats[i].tag == VIR_DOMAIN_MEMORY_STAT_SWAP_IN)
                 info.Set("swap_in", Napi::Number::New(Env(), memstats[i].val));
@@ -1158,16 +1159,16 @@ class DomainMemoryStatsWorker : public Worker {
             if (memstats[i].tag == VIR_DOMAIN_MEMORY_STAT_UNUSED)
                 info.Set("unused", Napi::Number::New(Env(), memstats[i].val));
             if (memstats[i].tag == VIR_DOMAIN_MEMORY_STAT_AVAILABLE) {
-                info.Set("available", Napi::Number::New(Env(), memstats[i].val));
                 available = memstats[i].val;
+                info.Set("available", Napi::Number::New(Env(), available));
             }
             if (memstats[i].tag == VIR_DOMAIN_MEMORY_STAT_USABLE) {
                 info.Set("usable", Napi::Number::New(Env(), memstats[i].val));
                 usable = memstats[i].val;
             }
             if (memstats[i].tag == VIR_DOMAIN_MEMORY_STAT_ACTUAL_BALLOON) {
-                info.Set("actual", Napi::Number::New(Env(), memstats[i].val));
                 actual = memstats[i].val;
+                info.Set("actual", Napi::Number::New(Env(), actual));
             }
             if (memstats[i].tag == VIR_DOMAIN_MEMORY_STAT_RSS) {
                 info.Set("rss", Napi::Number::New(Env(), memstats[i].val));
